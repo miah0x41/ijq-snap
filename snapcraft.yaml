@@ -1,0 +1,30 @@
+name: ijq-m0x41
+title: ijq (m0x41 package)
+contact: https://github.com/miah0x41
+source-code: https://github.com/miah0x41/ijq-snap
+license: GPL-3.0
+base: core20
+version: 'v0.3.8'
+summary: Interactive jq tool - personal package of gpanders/ijq
+description: |
+  ijq allows the interactive exploration of JSON utilising jq in the 
+  background.  Licensed under GNU General Public License v3 (GPLv3).
+
+  Set manual alias using - sudo snap alias ijq-m0x41.ijq ijq
+grade: stable
+confinement: strict
+apps:
+  ijq:
+    command: bin/ijq
+parts:
+  build-scdoc:
+    plugin: make
+    source: https://git.sr.ht/~sircmpwn/scdoc/archive/1.11.2.tar.gz
+    build-packages: [gcc]
+  build-ijq:
+    plugin: go
+    go-channel: latest/stable
+    source: https://git.sr.ht/~gpanders/ijq/archive/v0.3.8.tar.gz
+  ijq:
+    plugin: nil
+    stage-packages: [jq]
