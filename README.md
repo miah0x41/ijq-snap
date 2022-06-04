@@ -19,7 +19,7 @@ echo '{"name":"John", "age":30, "car":null}' | ijq
 ```
 
 ## License & Attribution
-The source for `ijq` is release under the [GPLvs](https://git.sr.ht/~gpanders/ijq/tree/v0.3.8/item/README.md) and is attruibuted to [gpanders/ijq](https://sr.ht/~gpanders/ijq/).
+The source for `ijq` is release under the [GPLv3](https://git.sr.ht/~gpanders/ijq/tree/v0.3.8/item/README.md) and is attruibuted to [gpanders/ijq](https://sr.ht/~gpanders/ijq/).
 
 This repository is also licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html) and covers the `snapcraft.yaml` definition.  The subsequent build of `ijq` from official sources should be considered "unofficial" as not done by the original author.
 
