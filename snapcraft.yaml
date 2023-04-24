@@ -4,7 +4,7 @@ contact: https://github.com/miah0x41
 source-code: https://github.com/miah0x41/ijq-snap
 license: GPL-3.0
 base: core20
-version: 'v0.3.8'
+version: 'v0.4.1'
 summary: Interactive jq tool - personal package of gpanders/ijq
 description: |
   ijq allows the interactive exploration of JSON utilising jq in the 
@@ -24,7 +24,7 @@ parts:
   build-ijq:
     plugin: go
     go-channel: latest/stable
-    source: https://git.sr.ht/~gpanders/ijq/archive/v0.3.8.tar.gz
+    source: https://git.sr.ht/~gpanders/ijq/archive/v0.4.1.tar.gz
   ijq:
     plugin: nil
     stage-packages: [jq]
