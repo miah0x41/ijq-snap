@@ -1,22 +1,20 @@
-name: Snapcraft Build and Publish
-env:
-  SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_TOKEN }}
-
 on: push
-
+name: Snapcraft Build and Publish
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_TOKEN }}
     steps:
-    
-    - uses: actions/checkout@v4
-    - uses: snapcore/action-build@v1
-      id: build
-    - uses: actions/upload-artifact@v3
-      with:
-        name: snap
-        path: ${{ steps.build.outputs.snap }}
-    - uses: snapcore/action-publish@v1
-      with:
-        snap: ${{ steps.build.outputs.snap }}
-        release: stable
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Snapcraft
+        uses: samuelmeuli/action-snapcraft@v2
+
+      # You can now run Snapcraft shell commands
+      - name: Build
+        run: snapcraft
+
+      - name: Publish
+        run: snapcraft upload --release=stable ijq-m0x41_v0.4.1_amd64.snap
