@@ -1,4 +1,6 @@
 name: Snapcraft Build and Publish
+env:
+  SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_TOKEN }}
 
 on: push
 
@@ -6,6 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    
     - uses: actions/checkout@v4
     - uses: snapcore/action-build@v1
       id: build
@@ -15,6 +18,5 @@ jobs:
         path: ${{ steps.build.outputs.snap }}
     - uses: snapcore/action-publish@v1
       with:
-        store_login: ${{ secrets.STORE_LOGIN }}
         snap: ${{ steps.build.outputs.snap }}
         release: stable
