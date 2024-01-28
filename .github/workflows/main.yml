@@ -13,3 +13,8 @@ jobs:
       with:
         name: snap
         path: ${{ steps.build.outputs.snap }}
+    - uses: snapcore/action-publish@v1
+      with:
+        store_login: ${{ secrets.STORE_LOGIN }}
+        snap: ${{ steps.build.outputs.snap }}
+        release: stable
