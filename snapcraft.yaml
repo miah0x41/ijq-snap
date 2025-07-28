@@ -3,7 +3,7 @@ title: ijq (m0x41 package)
 contact: https://github.com/miah0x41
 source-code: https://github.com/miah0x41/ijq-snap
 license: GPL-3.0
-base: core24
+base: core20
 version: "v1.1.2"
 summary: Interactive jq tool - personal package of gpanders/ijq
 description: |
