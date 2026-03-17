@@ -29,6 +29,9 @@ parts:
       - PREFIX=/usr
     build-snaps: [go/latest/stable]
     build-packages: [gcc]
+    override-build: |
+      export PATH="$SNAPCRAFT_STAGE/usr/local/bin:$PATH"
+      snapcraftctl build
   ijq:
     plugin: nil
     stage-packages: [jq]
