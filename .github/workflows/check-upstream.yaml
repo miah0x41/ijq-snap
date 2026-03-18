@@ -1,0 +1,98 @@
+name: Check Upstream Versions
+
+on:
+  schedule:
+    - cron: "0 4 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check for upstream updates
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          # Extract current versions from snapcraft.yaml
+          current_ijq=$(grep '^version:' snapcraft.yaml | sed 's/version: *"//;s/"//')
+          current_scdoc=$(grep 'scdoc/archive/' snapcraft.yaml | sed 's|.*archive/||;s|\.tar\.gz||')
+
+          echo "Current ijq: $current_ijq"
+          echo "Current scdoc: $current_scdoc"
+
+          # Fetch latest tags via git ls-remote
+          latest_ijq=$(git ls-remote --tags https://codeberg.org/gpanders/ijq.git \
+            | awk -F/ '{print $3}' \
+            | grep -v '\^{}' \
+            | grep '^v' \
+            | sort -V \
+            | tail -1)
+
+          latest_scdoc=$(git ls-remote --tags https://git.sr.ht/~sircmpwn/scdoc \
+            | awk -F/ '{print $3}' \
+            | grep -v '\^{}' \
+            | grep '^[0-9]' \
+            | sort -V \
+            | tail -1)
+
+          echo "Latest ijq: $latest_ijq"
+          echo "Latest scdoc: $latest_scdoc"
+
+          # Determine what needs updating
+          update_ijq=false
+          update_scdoc=false
+
+          if [ "$current_ijq" != "$latest_ijq" ]; then
+            update_ijq=true
+            echo "ijq update available: $current_ijq -> $latest_ijq"
+          fi
+
+          if [ "$current_scdoc" != "$latest_scdoc" ]; then
+            update_scdoc=true
+            echo "scdoc update available: $current_scdoc -> $latest_scdoc"
+          fi
+
+          if [ "$update_ijq" = false ] && [ "$update_scdoc" = false ]; then
+            echo "All upstream versions are current."
+            exit 0
+          fi
+
+          # Apply updates to snapcraft.yaml
+          if [ "$update_ijq" = true ]; then
+            sed -i "s|$current_ijq|$latest_ijq|g" snapcraft.yaml
+          fi
+
+          if [ "$update_scdoc" = true ]; then
+            sed -i "s|$current_scdoc|$latest_scdoc|g" snapcraft.yaml
+          fi
+
+          # Create branch and PR
+          branch="upstream-update-$(date +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add snapcraft.yaml
+          git commit -m "Update upstream versions"
+          git push -u origin "$branch"
+
+          # Build PR body
+          body="## Upstream Version Updates"$'\n\n'
+          if [ "$update_ijq" = true ]; then
+            body+="- **ijq**: \`$current_ijq\` → \`$latest_ijq\`"$'\n'
+          fi
+          if [ "$update_scdoc" = true ]; then
+            body+="- **scdoc**: \`$current_scdoc\` → \`$latest_scdoc\`"$'\n'
+          fi
+          body+=$'\n'"Automated by the Check Upstream Versions workflow."
+
+          gh pr create \
+            --title "Update upstream versions" \
+            --body "$body"
