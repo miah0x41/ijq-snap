@@ -1,0 +1,8 @@
+# Build output
+*.snap
+
+# Claude Code
+CLAUDE.md
+
+# Local dev scripts
+scripts/

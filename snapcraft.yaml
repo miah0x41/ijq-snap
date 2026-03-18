@@ -15,16 +15,22 @@ grade: stable
 confinement: strict
 apps:
   ijq:
-    command: bin/ijq
+    command: usr/bin/ijq
 parts:
   build-scdoc:
     plugin: make
     source: https://git.sr.ht/~sircmpwn/scdoc/archive/1.11.3.tar.gz
     build-packages: [gcc]
   build-ijq:
-    plugin: go
-    go-channel: latest/stable
+    after: [build-scdoc]
+    plugin: make
     source: https://codeberg.org/gpanders/ijq/archive/v1.1.2.tar.gz
+    make-parameters:
+      - PREFIX=/usr
+    build-snaps: [go/latest/stable]
+    build-packages: [gcc]
+    build-environment:
+      - PATH: $SNAPCRAFT_STAGE/usr/local/bin:$PATH
   ijq:
     plugin: nil
     stage-packages: [jq]
